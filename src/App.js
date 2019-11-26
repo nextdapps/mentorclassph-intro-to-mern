@@ -1,26 +1,45 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, { Component } from 'react';
 import './App.css';
 
-function App() {
+class App extends Component {
+  state = {
+    users: []
+  }
+
+  constructor(props) {
+    super(props)
+    this.getUsers()
+  }
+
+  getUsers = async() => {
+    try {
+      const res = await fetch('http://localhost:7000/users')
+      const result = await res.json()
+      this.setState({
+        users: result.users
+      })
+    } catch (e) {
+      console.log("ERROR IS", e)
+    }
+  }
+
+  render() {
+    return (
+      <div>
+        {
+          this.state.users.map((u, key) => <UserCard user={u} key={`user-${key}`}/>)
+        }
+      </div>
+    )
+  }
+}
+
+function UserCard({ user }) {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      {user.firstname} {user.lastname}
     </div>
-  );
+  )
 }
 
 export default App;
